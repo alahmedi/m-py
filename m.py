@@ -16,6 +16,12 @@ DEF_FILE = "/tmp/m_file"
 UNDO_STACK = []
 REDO_STACK = []
 
+import signal
+
+def handler(signum, frame):
+    print('m: type "exit" to quit')
+
+signal.signal(signal.SIGINT, handler)
 
 # ---------------- Core helpers ----------------
 
@@ -82,7 +88,7 @@ def cmd_add(args):
 
     if os.path.exists(path):
         with open(path) as f:
-            line_no = sum(1 for _ in f) + 1
+            line_no = sum(1 for _ in f) + 1  
     else:
         line_no = 1
 
@@ -278,6 +284,9 @@ def cmd_cd(args):
 def cmd_pwd(args):
     os.system("pwd")
 
+def cmd_exec(args):
+    os.system(args[0])
+
 
 def cmd_help(args):
     print("""\
@@ -301,6 +310,7 @@ commands:
   undo              undo last change
   redo              redo last undone change
   watch <path>      live view
+  exec              execute shell command
   exit / quit       leave M
 """)
 
@@ -327,7 +337,8 @@ COMMANDS = {
     "redo": cmd_redo,
     "ls": cmd_ls,
     "cd": cmd_cd,
-    "pwd": cmd_pwd
+    "pwd": cmd_pwd,
+    "exec": cmd_exec
 }
 
 
